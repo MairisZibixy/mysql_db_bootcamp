@@ -1,0 +1,15 @@
+.container {
+    width: 500px;
+    margin: 100px auto;
+}
+
+.container form {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    background: gray;
+}
+
+.container button {
+    margin-top: 20px;
+}
