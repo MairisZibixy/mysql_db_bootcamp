@@ -2,6 +2,7 @@
 class DB
 {
     private $mysql;
+    private $users = [];
 
     public function __construct($server_name, $username, $password, $dbname)
     {
@@ -20,26 +21,43 @@ class DB
     /*
      * Atgriež visu tabulu masīvā
      * 
-     * @return array - tukšs vai visus tabulas datus
-    */
-    public function getAll($table_name)
+     * @return array - tukšs vai tabulas datus
+     */
+    public function fetchAll($table_name)
     {
         $table_name = $this->mysql->escape_string($table_name);
         $result = $this->mysql->query("SELECT * FROM `$table_name`");
         if ($result->num_rows > 0) {
-            return $result->fetch_all(MYSQLI_ASSOC);
+            while ($row = $result->fetch_assoc()) {
+                $this->users[$row["id"]] = $row;
+            }
+        } else {
+            $this->users = [];
+        }
+    }
+
+    public function getAll()
+    {
+        return $this->users;
+    }
+
+    public function find($id)
+    {
+        if (array_key_exists($id, $this->users)) {
+            return $this->users[$id];
         }
         return [];
     }
+
     /*
      * @param string $table_name
-     * @param array $values [$field_name => $field_value]
+     * @param array $values - [$field_name => $field_value]
      * 
      * @return string
      */
     public function add(string $table_name, array $entries)
     {
-        $column = array_keys($entries);
+        $columns = array_keys($entries);
 
         $first = true;
         $fields = "";
@@ -63,7 +81,15 @@ class DB
         }
     }
 
-    public function delete($id)
+    public function delete(string $table_name, $id)
     {
+        $sql = "DELETE FROM `$table_name` WHERE id=$id";
+
+        if ($this->mysql->query($sql) === true) {
+            unset($this->users[$id]);
+            echo "Record deleted successfully";
+        } else {
+            echo "Error deleting record: " . $this->mysql->error;
+        }
     }
 }

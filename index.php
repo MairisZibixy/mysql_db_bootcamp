@@ -2,18 +2,34 @@
 
 <div class="container">
     <form action="">
+        <?php
+        include 'DB.php';
+        $db = new DB('localhost', 'root', 'root', 'mysql_db');
+        $db->fetchAll('users');
+
+        if (array_key_exists('update', $_GET)) {
+            $id = $_GET['update'];
+            $user = $db->find($id);
+            if ($user !== []) {
+                echo "<h3><a href='/'>&lt;-</a> Atjauninam ierakstu ar id $id</h3>";
+                echo "<input type='hidden' name='update-id' value='$id'>";
+            }
+        } else {
+            $user = [];
+        }
+        ?>
+
         <label for="email">Epasts</label>
-        <input id="email" type="email" name="email">
+        <input id="email" type="email" name="email" value="<?= text(@$user['email']); ?>">
         <label for="username">Lietotājvārds</label>
-        <input id="username" type="text" name="username">
+        <input id="username" type="text" name="username" value="<?= text(@$user['username']); ?>">
 
         <button type="submit">submit</button>
     </form>
 
-    <?php
 
-    include 'DB.php';
-    $db = new DB('localhost', 'root', 'root', 'mysql_db');
+
+    <?php
 
     if (
         array_key_exists('username', $_GET) &&
@@ -24,21 +40,31 @@
         $db->add(
             'users',
             [
-                'username' => @$_GET['username'],
-                'email' => @$_GET['email']
+                'username' => $_GET['username'],
+                'email' => $_GET['email']
             ]
         );
     }
 
-    foreach ($db->getAll('users') as $row) {
-        echo "<p><b>" . $row['id'] . "</b> username:" . text($row['username']) . ", email:" . text($row['email']) .  "</p>";
+    if (array_key_exists('delete', $_GET)) {
+        $id = (int) $_GET['delete'];
+        $db->delete('users', $id);
+    }
+
+    foreach ($db->getAll() as $row) {
+        echo "<p>";
+        echo "<b>" . $row['id'] . "</b>";
+        echo "username:" . text($row['username']);
+        echo " email:" . text($row['email']);
+        echo " <a href='?delete=" . $row['id'] . "'>delete</a>";
+        echo " <a href='?update=" . $row['id'] . "'>update</a>";
+        echo "</p>";
     }
 
     function text($string)
     {
         return htmlentities($string);
     }
-
     ?>
 
 </div>
