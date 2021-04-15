@@ -24,8 +24,8 @@ class DB
     */
     public function getAll($table_name)
     {
-        $sql = "SELECT * FROM `$table_name`";
-        $result = $this->mysql->query($sql);
+        $table_name = $this->mysql->escape_string($table_name);
+        $result = $this->mysql->query("SELECT * FROM `$table_name`");
         if ($result->num_rows > 0) {
             return $result->fetch_all(MYSQLI_ASSOC);
         }
@@ -34,26 +34,36 @@ class DB
     /*
      * @param string $table_name
      * @param array $values [$field_name => $field_value]
+     * 
+     * @return string
      */
     public function add(string $table_name, array $entries)
     {
-        $columns = array_keys($entries);
+        $column = array_keys($entries);
 
-        $fields = join(",", $columns);
-
-        $values = [];
-        foreach ($entries as $value) {
-            $values[] = "'" . $value . "'";
+        $first = true;
+        $fields = "";
+        $field_values = "";
+        foreach ($entries as $column => $value) {
+            if ($first) {
+                $fields .= "`" . $column . "`";
+                $field_values .= "'" . $this->mysql->escape_string($value) . "'";
+                $first = false;
+            } else {
+                $fields .= ", `" . $column . "`";
+                $field_values .= ", '" . $this->mysql->escape_string($value) . "'";
+            }
         }
-        $field_values = join(",", $values);
-
 
         $sql = "INSERT INTO $table_name ($fields) VALUES ($field_values)";
-        echo $sql;
-        if ($this->mysql->query($sql) === TRUE) {
+        if ($this->mysql->query($sql) === true) {
             return "New record created successfully";
         } else {
             return "Error: " . $sql . "<br>" . $this->mysql->error;
         }
+    }
+
+    public function delete($id)
+    {
     }
 }

@@ -15,17 +15,29 @@
     include 'DB.php';
     $db = new DB('localhost', 'root', 'root', 'mysql_db');
 
-    foreach ($db->getAll('users') as $row) {
-        echo "<p> username:" . $row['username'] . ", email:" . $row['email'] . "</p>";
+    if (
+        array_key_exists('username', $_GET) &&
+        array_key_exists('email', $_GET) &&
+        is_string($_GET['username']) &&
+        is_string($_GET['email'])
+    ) {
+        $db->add(
+            'users',
+            [
+                'username' => @$_GET['username'],
+                'email' => @$_GET['email']
+            ]
+        );
     }
 
-    echo $db->add(
-        'users',
-        [
-            'username' => 'zibixy',
-            'email' => 'zibixy@example.com'
-        ]
-    );
+    foreach ($db->getAll('users') as $row) {
+        echo "<p><b>" . $row['id'] . "</b> username:" . text($row['username']) . ", email:" . text($row['email']) .  "</p>";
+    }
+
+    function text($string)
+    {
+        return htmlentities($string);
+    }
 
     ?>
 
