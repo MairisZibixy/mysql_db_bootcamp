@@ -1,5 +1,13 @@
+<?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+?>
+
+<!doctype html>
 <link rel="stylesheet" href="style.css">
 
+<a href="message.php">Message</a>
 <div class="container">
     <form action="">
         <?php
@@ -31,20 +39,37 @@
 
     <?php
 
+
+
     if (
         array_key_exists('username', $_GET) &&
         array_key_exists('email', $_GET) &&
         is_string($_GET['username']) &&
         is_string($_GET['email'])
     ) {
-        $db->add(
-            'users',
-            [
-                'username' => $_GET['username'],
-                'email' => $_GET['email']
-            ]
-        );
+        if (
+            array_key_exists('update-id', $_GET) &&
+            is_numeric($_GET['update-id'])
+        ) {
+            $db->update(
+                'users',
+                [
+                    'id' => $_GET['update-id'],
+                    'username' => $_GET['username'],
+                    'email' => $_GET['email']
+                ]
+            );
+        } else {
+            $db->add(
+                'users',
+                [
+                    'username' => $_GET['username'],
+                    'email' => $_GET['email']
+                ]
+            );
+        }
     }
+
 
     if (array_key_exists('delete', $_GET)) {
         $id = (int) $_GET['delete'];

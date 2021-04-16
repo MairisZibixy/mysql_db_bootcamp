@@ -1,3 +1,7 @@
+body {
+    background: rgb(255, 255, 255);
+}
+
 .container {
     width: 500px;
     margin: 100px auto;
@@ -6,10 +10,23 @@
 .container form {
     display: flex;
     flex-direction: column;
-    padding: 20px;
     background: gray;
+    padding: 20px;
 }
 
 .container button {
     margin-top: 20px;
+}
+
+.message form {
+    background: rgba(1, 139, 35, 0.479);
+}
+
+.message button {
+    background: rgb(34, 34, 34);
+    color: #fff;
+}
+
+.message form {
+    color: #fff;
 }
