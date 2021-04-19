@@ -1,6 +1,7 @@
 <!doctype html>
 <link rel="stylesheet" href="style.css">
 <a href="index.php">Main</a>
+<a href="number_in_list.php">Number in list</a>
 
 <div class="container message">
     <form action="">

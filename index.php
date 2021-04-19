@@ -6,8 +6,9 @@ error_reporting(E_ALL);
 
 <!doctype html>
 <link rel="stylesheet" href="style.css">
-
 <a href="message.php">Message</a>
+<a href="number_in_list.php">Number in list</a>
+
 <div class="container">
     <form action="">
         <?php
