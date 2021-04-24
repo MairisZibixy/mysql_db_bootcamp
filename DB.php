@@ -4,35 +4,39 @@ class DB
     private $mysql;
     private $entities = [];
 
+    // __construct izveido pieslēgumu serverim
     public function __construct($server_name, $username, $password, $dbname)
     {
         $this->mysql = new mysqli($server_name, $username, $password, $dbname);
-
+        // if pārbaude vai pieslēgums ir veiksmīgs, ja nav, tad pārtrauc lapas ielādēšanu
         if ($this->mysql->connect_error) {
             die("Connection failed: " . $this->mysql->connect_error);
         }
     }
-
+    // Atbrīvo atmiņu, kas kods tiek izpildīts, tad savienojums tiek slēgts
     public function __deconstruct()
     {
         $this->mysql->close();
     }
 
-
+    /*
+     * Izpilda 'query', lai saņemtu visus rezultātus 'SELECT *' norāda uz to 
+     * $result - oblekts kurā tiek ierakstītas visas $table_name vērtības
+     */
     public function fetchAll($table_name)
     {
         $table_name = $this->mysql->escape_string($table_name);
         $result = $this->mysql->query("SELECT * FROM `$table_name`");
-        if ($result->num_rows > 0) {
+        if ($result->num_rows > 0) { // Cikls iziet cauri $result
             while ($row = $result->fetch_assoc()) {
-                $this->entities[$row["id"]] = $row;
+                $this->entities[$row["id"]] = $row; // Piešķiram katram lietotājam atslēgu 'id'
             }
         } else {
             $this->entities = [];
         }
     }
 
-    /*
+    /* getAll
      * Atgriež visu tabulu masīvā
      * 
      * @return array - tukšs vai tabulas datus
@@ -42,10 +46,10 @@ class DB
         return $this->entities;
     }
 
-    public function find($id)
+    public function find($id) // Pārbauda vai servera tabulā ir $id
     {
         if (array_key_exists($id, $this->entities)) {
-            return $this->entities[$id];
+            return $this->entities[$id]; // Ja ir masīvā, tad to izvada
         }
         return [];
     }
