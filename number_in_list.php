@@ -19,6 +19,7 @@
                     <th>Test Condition 2</th>
                     <th>Test Condition 3</th>
                     <th>Test Condition 4</th>
+                    <th>Test Condition 5</th>
                 </tr>
         <?php
 
@@ -39,6 +40,10 @@
 
                 echo "<td>";
                 testCondition4($array);
+                echo "</td>";
+
+                echo "<td>";
+                testCondition5($array);
                 echo "</td>";
 
                 echo "</tr>";
@@ -148,14 +153,26 @@
         echo "FALSE";
     }
 
-    function fifthConditionTest($array)
+    function testCondition5($array)
     {
-        // Vai skaitļus var sarindod fibonačī virknē?
-
-        /*
+        /* 5.uzd
+        Vai skaitļus var sarindot fibonačī virknē?
             1, 1, 2, 3, 5, 8, 13, ...
             3, 8, 11, 
         */
+        $count = count($array);
+        $num_1 = 1; // Initialize variable, ar kuru sāk virkni
+        $num_2 = 0;
+        for ($r = 0; $r <= $count; $r++) {
+            $array = $num_1 + $num_2; // Katru for izpildes reizi saskaita $num_1 & $num_2
+            $num_1 = $num_2; // Pievieno pēdējo vērtību priekšpēdējai
+            $num_2 = $array; // Pievieno rezultāta vērtību pēdējai
+            // if ($array === $count) {
+            echo $num_1 . "+" . $num_2 . " = " . $array;
+            return;
+            // }
+        }
+        echo "FALSE";
     }
         ?>
 </div>
